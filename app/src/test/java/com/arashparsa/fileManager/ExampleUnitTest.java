@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.arashparsa.fileManager;
 
 import org.junit.Test;
 

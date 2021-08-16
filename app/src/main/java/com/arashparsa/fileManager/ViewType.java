@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.arashparsa.fileManager;
 
 public enum ViewType {
     ROW(0),GRID(1);
