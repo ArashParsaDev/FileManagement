@@ -36,6 +36,7 @@
         </FrameLayout>
 
         <EditText
+            android:id="@+id/et_main_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -64,7 +65,9 @@
             android:layout_marginTop="12dp"
             android:gravity="center_horizontal"
             app:checkedButton="@id/btn_mail_list"
-            app:singleSelection="true">
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            >
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_mail_list"

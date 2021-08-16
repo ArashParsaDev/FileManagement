@@ -6,7 +6,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
+
+import com.google.android.material.button.MaterialButtonToggleGroup;
 
 import java.io.File;
 
@@ -30,6 +35,45 @@ public class MainActivity extends AppCompatActivity implements AddNewFolderDialo
             File externalFilesDir = getExternalFilesDir(null);
             listFiles(externalFilesDir.getPath(),false);
         }
+
+        EditText EtSearch = findViewById(R.id.et_main_search);
+        EtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Fragment fragment =getSupportFragmentManager().findFragmentById(R.id.frame_main_fragmentContainer);
+                if(fragment instanceof  FileListFragment){
+                    ((FileListFragment) fragment).search(charSequence.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        MaterialButtonToggleGroup toggleGroup = findViewById(R.id.toggleGroup_main);
+        toggleGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
+            @Override
+            public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
+                if(checkedId == R.id.btn_mail_list && isChecked){
+                    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frame_main_fragmentContainer);
+                    if(fragment instanceof  FileListFragment){
+                        ((FileListFragment) fragment).setViewType(ViewType.ROW);
+                    }
+                }else if(checkedId == R.id.btn_mail_grid && isChecked){
+                    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frame_main_fragmentContainer);
+                    if(fragment instanceof  FileListFragment){
+                        ((FileListFragment) fragment).setViewType(ViewType.GRID);
+                    }
+                }
+            }
+        });
 
 
     }

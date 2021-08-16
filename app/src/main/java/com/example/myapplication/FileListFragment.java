@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +24,7 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
     private String path;
     private FileAdapter fileAdapter;
     private RecyclerView recyclerView;
+    private GridLayoutManager gridLayoutManager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,14 +42,13 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
 
 
         if(StorageHelper.isExternalStorageReadable()){
+
             File[] files = currentFolder.listFiles();
-
             fileAdapter = new FileAdapter(Arrays.asList(files), this);
-
             recyclerView.setAdapter(fileAdapter);
             recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-
+            gridLayoutManager = new GridLayoutManager(getContext(),1,RecyclerView.VERTICAL,false);
+            recyclerView.setLayoutManager(gridLayoutManager);
         }
 
         TextView pathTv = view.findViewById(R.id.tv_files_path);
@@ -117,10 +118,10 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
     public void createNewFolder(String folderName) {
         if(StorageHelper.isExternalStorageWritable()){
 
-            File newFodler = new File(path + File.separator + folderName);
-            if (!newFodler.exists()) {
-                if (newFodler.mkdir()) {
-                    fileAdapter.addFile(newFodler);
+            File newFolder = new File(path + File.separator + folderName);
+            if (!newFolder.exists()) {
+                if (newFolder.mkdir()) {
+                    fileAdapter.addFile(newFolder);
                     recyclerView.scrollToPosition(0);
                 }
             }
@@ -139,5 +140,21 @@ public class FileListFragment extends Fragment implements FileAdapter.FileItemEv
 
         fileInputStream.close();
         fileOutputStream.close();
+    }
+    public void search(String query){
+        if (fileAdapter!= null){
+            fileAdapter.search(query);
+        }
+    }
+
+    public void setViewType(ViewType viewType){
+        if(fileAdapter != null){
+            fileAdapter.setViewType(viewType);
+            if(viewType == ViewType.GRID){
+                gridLayoutManager.setSpanCount(2);
+            }else
+                gridLayoutManager.setSpanCount(1);
+
+        }
     }
 }

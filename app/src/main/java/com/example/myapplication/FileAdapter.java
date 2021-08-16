@@ -18,28 +18,32 @@ import java.util.List;
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder> {
 
     List<File> files;
+    List<File> filteredFiles;
     private FileItemEventListener fileItemEventListener;
+    //default value show :
+    private ViewType viewType = ViewType.ROW;
 
     public FileAdapter(List<File> files,FileItemEventListener fileItemEventListener) {
         this.files = new ArrayList<>(files);
+        this.filteredFiles = this.files;
         this.fileItemEventListener = fileItemEventListener;
     }
 
     @NonNull
     @Override
     public FileViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view =  LayoutInflater.from(parent.getContext()).inflate(R.layout.item_file,parent,false);
+        View view =  LayoutInflater.from(parent.getContext()).inflate(viewType==ViewType.ROW.getValue() ? R.layout.item_file : R.layout.item_file_grid,parent,false);
         return new FileViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull FileViewHolder holder, int position) {
-        holder.bindFile(files.get(position));
+        holder.bindFile(filteredFiles.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return files.size();
+        return filteredFiles.size();
     }
 
     public  class FileViewHolder extends RecyclerView.ViewHolder {
@@ -128,4 +132,34 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
         files.add(0,file);
         notifyItemInserted(0);
         }
+
+
+        public void search(String query){
+            if(query.length()>0){
+                List<File> result = new ArrayList<>();
+                for(File file : this.files)
+                {
+                    if(file.getName().toLowerCase().contains(query.toLowerCase())){
+                        result.add(file);
+                    }
+                }
+               this.filteredFiles = result;
+                notifyDataSetChanged();
+
+
+            }else{
+                this.filteredFiles = this.files;
+                notifyDataSetChanged();
+            }
+        }
+
+    @Override
+    public int getItemViewType(int position) {
+        return viewType.getValue();
+    }
+
+    public void setViewType(ViewType viewType) {
+        this.viewType = viewType;
+        notifyDataSetChanged();
+    }
 }
